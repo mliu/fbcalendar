@@ -1,0 +1,29 @@
+
+
+/* ==========================================================================
+   Custom CSS
+   ========================================================================== */
+
+.container {
+  width: 80%;
+  margin: auto;
+}
+
+.calendar {
+  width: 620px;
+  height: 720px;
+  padding: 0 10px;
+  margin: auto;
+  background-color: #E0E0E0;
+}
+
+.calendar .entry {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-left: 4px solid #336699;
+  padding: 5px;
+  position: absolute;
+  float: left;
+  background-color: #fff;
+}
