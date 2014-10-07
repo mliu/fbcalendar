@@ -9,6 +9,9 @@ var Event = function (start, end) {
   this.rendered = false;
   this.title = "Sample Title";
   this.description = "Lorem Ipsum";
+  this.maxDepth = 0;
+  this.depth = 0;
+  this.children = [];
 };
 
 function EventTree () {
@@ -41,18 +44,20 @@ EventTree.prototype.initialize = function(events, target) {
 }
 
 EventTree.prototype.append = function(entry) {
+  var currentEvent = new Event(entry.start, entry.end)
   var overlappedEvents = this.tree.filter(function (otherEntry) {
     //If otherEntry overlaps with current event at any time
     if ((entry.start >= otherEntry.start && entry.start <= otherEntry.end) || (otherEntry.start >= entry.start && otherEntry.start <= entry.end)) {
-      this.tree.push(otherEntry);
+      //Append the current event to the other entry
+      currentEvent.depth = otherEntry.depth + 1;
+      otherEntry.children.push(currentEvent);
+      debugger;
       return true;
-    } else {
-      return false;
     }
   }, this);
 
   if (overlappedEvents.length == 0) {
-    this.tree.push(new Event(entry.start, entry.end));
+    this.tree.push(currentEvent);
   }
 }
 
@@ -61,13 +66,28 @@ EventTree.prototype.render = function(target) {
     var el = document.createElement('div');
     $(el).attr('class', 'entry').css({
       top: entry.start + 'px',
-      width: '600px',
+      width: (600 / this.findMaxDepth(entry.children, entry.depth)) + 'px',
       height: entry.height,
     });
     el.innerHTML = '<span><strong>' + entry.title + '</strong></span>' +
                    '<br><span>' + entry.description + '</span>';
     target.append(el);
-  });
+  }, this);
+}
+
+EventTree.prototype.findMaxDepth = function(events) {
+  // if (!events) {
+  //   return depth - 1;
+  // } else {
+  //   events.forEach(function (entry) {
+  //     return 
+  //   });
+  // }
+  var depth = 0;
+  events.forEach(function (entry) {
+    depth = Math.max(depth, this.findMaxDepth(entry.children));
+  }, this);
+  return depth + 1;
 }
 
 function layOutDay(events) {
